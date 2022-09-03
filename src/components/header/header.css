@@ -1,0 +1,33 @@
+.header {
+  background: #58249c;
+  padding: 20px;
+  color: #fff;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin-right: auto;
+  color: #fff;
+}
+
+
+.btn_login{
+    color: #fff;
+    margin-left: 10px;
+    padding: 8px;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    background: #58249c;
+}
+
+.btn_login:hover{
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+}

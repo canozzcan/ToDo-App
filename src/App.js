@@ -1,9 +1,14 @@
-
+import { useSelector } from "react-redux";
+import Content from "./components/content/Content";
+import Login from "./components/login/Login";
 
 function App() {
+  const user = useSelector((state) => state.auth.user);
+
   return (
     <div className="App">
-      <p>Init Project</p>
+      {!user ? <Login /> : <Content/>}
+      
     </div>
   );
 }
