@@ -11,10 +11,10 @@ const Login = () => {
   return (
     <div className="modal-backdrop">
       <div className="modal">
-        <h2>Enter Your Name</h2>
+        <h2>User Login</h2>
         <form>
           <div className="formControl">
-            <input type="text" required value={name} onChange={(e) => setName(e.target.value)} />
+            <input type="text" placeholder="Enter your name..." required value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div>
             <button onClick={() => dispatch(login(name))} className="btn">

@@ -1,12 +1,18 @@
-import React from 'react'
-import Header from '../header/Header'
+import React from "react";
+import Header from "../header/Header";
+import TodoForm from "../todoForm/TodoForm";
+import TodoList from "../todoList/TodoList";
 
-import './content.css'
+import "./content.css";
 
 const Content = () => {
   return (
-    <div><Header/></div>
-  )
-}
+    <div>
+      <Header />
+      <TodoForm/>
+      <TodoList />
+    </div>
+  );
+};
 
-export default Content
+export default Content;
