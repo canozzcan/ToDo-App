@@ -1,32 +1,38 @@
 import "./todoForm.css";
 
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { nanoid } from "@reduxjs/toolkit";
-import { addTodo } from "../../redux/Todos/todosSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addTodoAsync } from "../../redux/Todos/todosSlice";
+
+import Loading from "../loading/Loading";
+import Error from "../error/Error";
 
 const TodoForm = () => {
   const [content, setContent] = useState("");
-
   const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.todos.addNewTodoIsLoading);
+  const error = useSelector((state) => state.todos.addNewTodoError);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    dispatch(addTodo({ id: nanoid(), content, isCompleted: false }));
+    await dispatch(addTodoAsync({ content }));
     setContent("");
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form className="form" onSubmit={handleSubmit}>
         <input
+          disabled={isLoading || error}
           className="new-todo"
           placeholder="Write your new To Do and press Enter"
           autoFocus
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
+        {isLoading && <Loading />}
+        {error && <Error message={error} />}
       </form>
     </div>
   );

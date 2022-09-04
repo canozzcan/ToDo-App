@@ -2,9 +2,15 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const getTodosAsync = createAsyncThunk('todos/getTodosAsync', async () => {
-    const res = await axios('https://630e04a1109c16b9abf2cdc5.mockapi.io/todos');
+    const res = await axios(`${process.env.REACT_APP_API_BASE_ENDPOINT}/todos`);
     return res.data;
 })
+
+export const addTodoAsync = createAsyncThunk('todos/addTodoAsync', async (data) => {
+    const res = await axios.post(`${process.env.REACT_APP_API_BASE_ENDPOINT}/todos`, data);
+    return res.data;
+});
+
 
 export const todosSlice = createSlice({
     name: 'todos',
@@ -12,11 +18,10 @@ export const todosSlice = createSlice({
         items: [],
         isLoading: false,
         error: null,
+        addNewTodoIsLoading: false,
+        addNewTodoError: null
     },
     reducers: {
-        addTodo: (state, action) => {
-            state.items.push(action.payload);
-        },
         toggle: (state, action) => {
             const { id } = action.payload;
             const item = state.items.find(item => item.id === id);
@@ -41,10 +46,23 @@ export const todosSlice = createSlice({
             state.isLoading = false;
             state.error = action.error.message;
         },
+
+        // Add ToDo
+        [addTodoAsync.pending]: (state, action) => {
+            state.addNewTodoIsLoading = true;
+        },
+        [addTodoAsync.fulfilled]: (state, action) => {
+            state.items.push(action.payload);
+            state.addNewTodoIsLoading = false;
+        },
+        [addTodoAsync.rejected]: (state, action) => {
+            state.addNewTodoIsLoading = false;
+            state.addNewTodoError = action.error.message;
+        },
     }
 });
 
 export const selectTodos = state => state.todos.items;
 
-export const { addTodo, toggle, deleteTodo } = todosSlice.actions;
+export const { toggle, deleteTodo } = todosSlice.actions;
 export default todosSlice.reducer;
