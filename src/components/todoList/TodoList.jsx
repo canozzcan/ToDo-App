@@ -8,9 +8,9 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   selectTodos,
-  toggle,
-  deleteTodo,
   getTodosAsync,
+  toggleTodoAsync,
+  removeTodoAsync
 } from "../../redux/Todos/todosSlice";
 import Loading from "../loading/Loading";
 import Error from "../error/Error";
@@ -25,12 +25,16 @@ const TodoList = () => {
     dispatch(getTodosAsync());
   }, [dispatch]);
 
+  const handleToggle = async (id, isCompleted) => {
+    await dispatch(toggleTodoAsync({ id, data: { isCompleted } }));
+  };
+
   if (isLoading) {
     return <Loading />;
   }
 
   if (error) {
-    return <Error message={error}/>;
+    return <Error message={error} />;
   }
 
   return (
@@ -44,7 +48,7 @@ const TodoList = () => {
           <div className="buttons">
             <IconButton
               className="icon"
-              onClick={() => dispatch(toggle({ id: item.id }))}
+              onClick={() => handleToggle(item.id, !item.isCompleted)}
             >
               <CheckIcon />
             </IconButton>
@@ -53,7 +57,7 @@ const TodoList = () => {
             </IconButton>
             <IconButton
               className="icon"
-              onClick={() => dispatch(deleteTodo(item.id))}
+              onClick={() => dispatch(removeTodoAsync(item.id))}
             >
               <DeleteIcon />
             </IconButton>

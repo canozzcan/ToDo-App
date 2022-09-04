@@ -11,6 +11,16 @@ export const addTodoAsync = createAsyncThunk('todos/addTodoAsync', async (data) 
     return res.data;
 });
 
+export const toggleTodoAsync = createAsyncThunk('todos/toggleTodoAsync', async ({ id, data }) => {
+    const res = await axios.put(`${process.env.REACT_APP_API_BASE_ENDPOINT}/todos/${id}`, data);
+    return res.data;
+})
+
+export const removeTodoAsync = createAsyncThunk('todos/removeTodoAsync', async (id) => {
+    await axios.delete(`${process.env.REACT_APP_API_BASE_ENDPOINT}/todos/${id}`);
+    return id;
+})
+
 
 export const todosSlice = createSlice({
     name: 'todos',
@@ -21,18 +31,7 @@ export const todosSlice = createSlice({
         addNewTodoIsLoading: false,
         addNewTodoError: null
     },
-    reducers: {
-        toggle: (state, action) => {
-            const { id } = action.payload;
-            const item = state.items.find(item => item.id === id);
-            item.isCompleted = !item.isCompleted;
-        },
-        deleteTodo: (state, action) => {
-            const id = action.payload;
-            const filtered = state.items.filter((item) => item.id !== id);
-            state.items = filtered;
-        }
-    },
+    reducers: {},
     extraReducers: {
         // Get ToDo's
         [getTodosAsync.pending]: (state, action) => {
@@ -59,10 +58,24 @@ export const todosSlice = createSlice({
             state.addNewTodoIsLoading = false;
             state.addNewTodoError = action.error.message;
         },
+
+        // Toggle ToDo
+        [toggleTodoAsync.fulfilled]: (state, action) => {
+            const { id, isCompleted } = action.payload;
+            const index = state.items.findIndex(item => item.id === id);
+            state.items[index].isCompleted = isCompleted;
+        },
+
+        // remove ToDo
+        [removeTodoAsync.fulfilled]: (state, action) => {
+            const id = action.payload;
+            const index = state.items.findIndex((item) => item.id === id);
+            state.items.splice(index, 1);
+        }
     }
 });
 
 export const selectTodos = state => state.todos.items;
 
-export const { toggle, deleteTodo } = todosSlice.actions;
+
 export default todosSlice.reducer;
