@@ -21,6 +21,11 @@ export const removeTodoAsync = createAsyncThunk('todos/removeTodoAsync', async (
     return id;
 })
 
+export const editTodoAsync = createAsyncThunk('todos/editTodoAsync', async ({ id, data }) => {
+    const res = await axios.put(`${process.env.REACT_APP_API_BASE_ENDPOINT}/todos/${id}`, data)
+    return res.data;
+})
+
 
 export const todosSlice = createSlice({
     name: 'todos',
@@ -66,11 +71,18 @@ export const todosSlice = createSlice({
             state.items[index].isCompleted = isCompleted;
         },
 
-        // remove ToDo
+        // Remove ToDo
         [removeTodoAsync.fulfilled]: (state, action) => {
             const id = action.payload;
             const index = state.items.findIndex((item) => item.id === id);
             state.items.splice(index, 1);
+        },
+
+        // Edit Todo
+        [editTodoAsync.fulfilled]: (state, action) => {
+            const { takeId, content } = action.payload;
+            const index = state.items.findIndex((item) => item.id === takeId);
+            state.items[index].content = content;  
         }
     }
 });
